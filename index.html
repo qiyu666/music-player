@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>音乐播放器</title>
+    <link rel="stylesheet" type="text/css" href="./css/audio.css">
+</head>
+
+<body id="body" background="./img/bg0.png">
+    <div class="upper-container">
+        <!-- 唱片背景 -->
+        <div class="record-container">
+            <div class="record-bg">
+                <div id="record-img" class="rotate-play"></div>
+            </div>
+        </div>
+        <!-- 音乐介绍 -->
+        <div class="introduction-container">
+            <div class="text-container">
+                <div id="music-title">音乐1</div>
+                <div class="author-container">作者：
+                    <span id="author-name">未知</span>
+                </div>
+            </div>
+            <!-- 歌词显示区域 -->
+            <div class="lyrics-container">
+                <div id="lyrics-content" class="lyrics-content"></div>
+            </div>
+        </div>
+    </div>
+    <!-- 音乐播放器主要内容 -->
+    <div class="audio-box">
+        <div class="audio-container">
+            <audio id="audioTag"></audio>
+            <!-- 加载状态 -->
+            <div id="loading" class="loading">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">加载中...</div>
+            </div>
+            <!-- 错误提示 -->
+            <div id="error-message" class="error-message"></div>
+            <!-- 进度条 -->
+            <div class="a-progress">
+                <div class="pgs-total" id="progress-total">
+                    <div class="pgs-play" id="progress" style="width: 0%;"></div>
+                </div>
+            </div>
+            <!-- 下排控制按钮 -->
+            <div class="a-controls">
+                <!-- 播放时长 -->
+                <div class="time-container">
+                    <span class="played-time" id="playedTime">00:00</span>&nbsp;/&nbsp;
+                    <span class="audio-time" id="audioTime">00:00</span>
+                </div>
+                <!-- 中间按钮 -->
+                <div class="center-button-container">
+                    <!-- 播放模式 -->
+                    <div id="playMode" class="center-icon mode"></div>
+                    <!-- 上一首 -->
+                    <div id="skipForward" class="center-icon s-right"></div>
+                    <!-- 暂停按钮 -->
+                    <div id="playPause" class="icon-play"></div>
+                    <!-- 下一首 -->
+                    <div id="skipBackward" class="center-icon s-left"></div>
+                    <!-- 音量调节 -->
+                    <div id="volume" class="center-icon volume"></div>
+                    <!-- 音量悬浮窗 -->
+                    <input type="range" id="volumn-togger" name="change" value="70" min="0" max="100" step="1">
+                </div>
+                <!-- 后部按钮 -->
+                <div class="bottom-button-container">
+                    <!-- 收藏 -->
+                    <div id="favorite" class="bottom-icon favorite"></div>
+                    <!-- 列表 -->
+                    <div id="list" class="bottom-icon list"></div>
+                    <!-- 快捷键提示 -->
+                    <div id="shortcuts" class="bottom-icon shortcuts">?</div>
+                    <!-- 倍速 -->
+                    <div id="speed" class="speed">1.0X</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 音乐列表 -->
+    <div class="close-list" id="close-list"></div>
+    <div class="music-list" id="music-list">
+        <div class="music-list-container">
+            <div class="music-list-title">播放队列</div>
+            <hr class="line">
+            <div class="search-container">
+                <input type="text" id="search-input" class="search-input" placeholder="搜索歌曲...">
+                <div id="search-clear" class="search-clear">✕</div>
+            </div>
+            <div class="all-music-label">全部音乐</div>
+            <div class="all-list" id="all-list">
+                <!-- emo 板块 -->
+                <div class="music-section">
+                    <div class="section-title">emo</div>
+                    <div id="music0">LifeLine - Zeraphym</div>
+                    <div id="music1">III（Find Yourself） - Athletics</div>
+                    <div id="music3">Faded Light - Pylot</div>
+                    <div id="music4">Duvet - Bôa</div>
+                    <div id="music5">Towards the Light - Jacoo</div>
+                    <div id="music6">green to blue - Aurenth</div>
+                    <div id="music7">Are You Lost - park bird</div>
+                    <div id="music8">回忆观影券(伴奏) - IN-K/王忻辰</div>
+                    <div id="music9">24/7(氛围) - Diary</div>
+                    <div id="music10">中式梦核MMM - 百万调音师&失眠飞行</div>
+                    <div id="music11">Dramamine - flawed mangoes</div>
+                </div>
+                
+                <!-- 韩语音乐 板块 -->
+                <div class="music-section">
+                    <div class="section-title">韩语音乐</div>
+                    <div id="music2">안녕goodbye - dia</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 快捷键提示弹窗 -->
+    <div class="shortcuts-modal" id="shortcuts-modal">
+        <div class="shortcuts-content">
+            <div class="shortcuts-header">
+                <h2>快捷键</h2>
+                <div id="close-shortcuts" class="close-btn">✕</div>
+            </div>
+            <div class="shortcuts-list">
+                <div class="shortcut-item">
+                    <span class="key">空格</span>
+                    <span class="desc">播放/暂停</span>
+                </div>
+                <div class="shortcut-item">
+                    <span class="key">←</span>
+                    <span class="desc">上一首</span>
+                </div>
+                <div class="shortcut-item">
+                    <span class="key">→</span>
+                    <span class="desc">下一首</span>
+                </div>
+                <div class="shortcut-item">
+                    <span class="key">↑</span>
+                    <span class="desc">音量+</span>
+                </div>
+                <div class="shortcut-item">
+                    <span class="key">↓</span>
+                    <span class="desc">音量-</span>
+                </div>
+                <div class="shortcut-item">
+                    <span class="key">M</span>
+                    <span class="desc">静音/取消静音</span>
+                </div>
+                <div class="shortcut-item">
+                    <span class="key">L</span>
+                    <span class="desc">打开/关闭播放列表</span>
+                </div>
+                <div class="shortcut-item">
+                    <span class="key">S</span>
+                    <span class="desc">切换播放速度</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./js/audio.js"></script>
+</body>
+
+</html>
