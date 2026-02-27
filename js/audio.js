@@ -778,12 +778,11 @@ document.addEventListener('keydown', function(event) {
 updatePlayHistoryDisplay();
 
 // 播放历史展开/收起功能
-const historyPanel = document.getElementById('history-panel');
 const historyToggle = document.getElementById('history-toggle');
 const historyList = document.getElementById('history-list');
+const historyPanel = document.getElementById('history-panel');
 
 historyToggle.addEventListener('click', function() {
-    historyPanel.classList.toggle('collapsed');
     historyList.classList.toggle('collapsed');
     historyToggle.classList.toggle('collapsed');
 });
@@ -791,7 +790,6 @@ historyToggle.addEventListener('click', function() {
 // 点击历史面板头部也可以展开/收起
 const historyHeader = document.querySelector('.history-header');
 historyHeader.addEventListener('click', function() {
-    historyPanel.classList.toggle('collapsed');
     historyList.classList.toggle('collapsed');
     historyToggle.classList.toggle('collapsed');
 });
