@@ -16,9 +16,12 @@ const elements = {
     volume: document.getElementById('volume'),
     volumeTogger: document.getElementById('volumn-togger'),
     list: document.getElementById('list'),
+    history: document.getElementById('history'),
     speed: document.getElementById('speed'),
     closeList: document.getElementById('close-list'),
+    closeHistory: document.getElementById('close-history'),
     musicList: document.getElementById('music-list'),
+    historyPanel: document.getElementById('history-panel'),
     allList: document.getElementById('all-list'),
     lyricsContent: document.getElementById('lyrics-content'),
     loading: document.getElementById('loading'),
@@ -603,11 +606,23 @@ elements.list.addEventListener('click', function() {
     elements.closeList.style.display = 'flex';
 });
 
+// 点击历史展开播放历史
+elements.history.addEventListener('click', function() {
+    elements.historyPanel.classList.add('show');
+    elements.closeHistory.style.display = 'flex';
+});
+
 // 点击关闭面板关闭音乐列表
 elements.closeList.addEventListener('click', function() {
     elements.musicList.classList.remove('list-card-show');
     elements.musicList.classList.add('list-card-hide');
     elements.closeList.style.display = 'none';
+});
+
+// 点击关闭面板关闭播放历史
+elements.closeHistory.addEventListener('click', function() {
+    elements.historyPanel.classList.remove('show');
+    elements.closeHistory.style.display = 'none';
 });
 
 // 播放模式设置
@@ -776,33 +791,3 @@ document.addEventListener('keydown', function(event) {
 
 // 初始化播放历史显示
 updatePlayHistoryDisplay();
-
-// 播放历史展开/收起功能
-const historyToggle = document.getElementById('history-toggle');
-const historyList = document.getElementById('history-list');
-
-historyToggle.addEventListener('click', function() {
-    historyList.classList.toggle('collapsed');
-    historyToggle.classList.toggle('collapsed');
-});
-
-// 点击历史面板头部也可以展开/收起
-const historyHeader = document.querySelector('.history-header');
-historyHeader.addEventListener('click', function() {
-    historyList.classList.toggle('collapsed');
-    historyToggle.classList.toggle('collapsed');
-});
-
-// 侧边栏展开/收起功能
-const sidebarToggle = document.getElementById('sidebar-toggle');
-const historyPanel = document.getElementById('history-panel');
-
-sidebarToggle.addEventListener('click', function() {
-    historyPanel.classList.toggle('collapsed');
-    // 切换箭头方向
-    if (historyPanel.classList.contains('collapsed')) {
-        sidebarToggle.textContent = '▶';
-    } else {
-        sidebarToggle.textContent = '◀';
-    }
-});

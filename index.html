@@ -9,18 +9,6 @@
 
 <body id="body" background="./img/bg0.png">
     <div class="upper-container">
-        <!-- 播放历史面板 -->
-        <div class="history-panel" id="history-panel">
-            <div class="sidebar-toggle" id="sidebar-toggle">▶</div>
-            <div class="history-header">
-                <h3>播放历史</h3>
-                <div class="history-toggle" id="history-toggle">▼</div>
-            </div>
-            <div id="history-list" class="history-list">
-                <!-- 播放历史会通过JavaScript动态添加 -->
-                <div class="no-history">暂无播放历史</div>
-            </div>
-        </div>
         <!-- 唱片背景 -->
         <div class="record-container">
             <div class="record-bg">
@@ -84,6 +72,8 @@
                 <div class="bottom-button-container">
                     <!-- 收藏 -->
                     <div id="favorite" class="bottom-icon favorite"></div>
+                    <!-- 历史 -->
+                    <div id="history" class="bottom-icon history" title="播放历史"></div>
                     <!-- 列表 -->
                     <div id="list" class="bottom-icon list"></div>
                     <!-- 快捷键提示 -->
@@ -131,6 +121,19 @@
                     <div class="section-title">韩语音乐</div>
                     <div id="music2">안녕goodbye - dia</div>
                 </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 播放历史面板 -->
+    <div class="close-list" id="close-history"></div>
+    <div class="history-panel" id="history-panel">
+        <div class="history-panel-container">
+            <div class="history-panel-title">播放历史</div>
+            <hr class="line">
+            <div id="history-list" class="history-list">
+                <!-- 播放历史会通过JavaScript动态添加 -->
+                <div class="no-history">暂无播放历史</div>
             </div>
         </div>
     </div>
