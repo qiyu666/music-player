@@ -28,7 +28,8 @@ const elements = {
     favorite: document.getElementById('favorite'),
     shortcuts: document.getElementById('shortcuts'),
     shortcutsModal: document.getElementById('shortcuts-modal'),
-    closeShortcuts: document.getElementById('close-shortcuts')
+    closeShortcuts: document.getElementById('close-shortcuts'),
+    download: document.getElementById('download')
 };
 
 const { audio, recordImg } = elements;
@@ -362,6 +363,26 @@ elements.searchClear.addEventListener('click', function() {
     searchMusic('');
 });
 
+// 下载功能
+elements.download.addEventListener('click', function() {
+    downloadMusic();
+});
+
+function downloadMusic() {
+    const musicName = musicData[musicId][0];
+    const authorName = musicData[musicId][1];
+    const fileName = `${musicName}-${authorName}.mp3`;
+    const audioUrl = `mp3/music${musicId}.mp3`;
+    
+    const link = document.createElement('a');
+    link.href = audioUrl;
+    link.download = fileName;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
 // 初始化音乐
 function initMusic() {
     showLoading();
@@ -644,6 +665,10 @@ document.addEventListener('keydown', function(event) {
         case 'KeyS':
             event.preventDefault();
             elements.speed.click();
+            break;
+        case 'KeyD':
+            event.preventDefault();
+            elements.download.click();
             break;
     }
 });
