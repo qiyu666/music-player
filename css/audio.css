@@ -679,11 +679,14 @@ body {
 }
 
 .all-list .music-section div:not(.section-title) {
-    height: 50px;
+    min-height: 50px;
     line-height: 50px;
     color: white;
     font-weight: 300;
     padding: 0% 15% 0% 15%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .all-list .music-section div:not(.section-title):hover {
