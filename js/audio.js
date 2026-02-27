@@ -780,7 +780,6 @@ updatePlayHistoryDisplay();
 // 播放历史展开/收起功能
 const historyToggle = document.getElementById('history-toggle');
 const historyList = document.getElementById('history-list');
-const historyPanel = document.getElementById('history-panel');
 
 historyToggle.addEventListener('click', function() {
     historyList.classList.toggle('collapsed');
@@ -792,4 +791,18 @@ const historyHeader = document.querySelector('.history-header');
 historyHeader.addEventListener('click', function() {
     historyList.classList.toggle('collapsed');
     historyToggle.classList.toggle('collapsed');
+});
+
+// 侧边栏展开/收起功能
+const sidebarToggle = document.getElementById('sidebar-toggle');
+const historyPanel = document.getElementById('history-panel');
+
+sidebarToggle.addEventListener('click', function() {
+    historyPanel.classList.toggle('collapsed');
+    // 切换箭头方向
+    if (historyPanel.classList.contains('collapsed')) {
+        sidebarToggle.textContent = '▶';
+    } else {
+        sidebarToggle.textContent = '◀';
+    }
 });
