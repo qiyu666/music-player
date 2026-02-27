@@ -29,16 +29,7 @@ const elements = {
     shortcuts: document.getElementById('shortcuts'),
     shortcutsModal: document.getElementById('shortcuts-modal'),
     closeShortcuts: document.getElementById('close-shortcuts'),
-    download: document.getElementById('download'),
-    equalizer: document.getElementById('equalizer'),
-    equalizerModal: document.getElementById('equalizer-modal'),
-    closeEqualizer: document.getElementById('close-equalizer'),
-    queue: document.getElementById('queue'),
-    queueModal: document.getElementById('queue-modal'),
-    closeQueue: document.getElementById('close-queue'),
-    queueList: document.getElementById('queue-list'),
-    clearQueue: document.getElementById('clear-queue'),
-    shuffleQueue: document.getElementById('shuffle-queue')
+    download: document.getElementById('download')
 };
 
 const { audio, recordImg } = elements;
@@ -77,28 +68,6 @@ let preloadedMusicId = -1;
 // 播放历史
 let playHistory = [];
 const MAX_HISTORY_ITEMS = 50;
-
-// 播放队列
-let playQueue = [];
-let queueIndex = -1;
-
-// 音效设置
-let fadeEnabled = true;
-let fadeDuration = 1000; // 淡入淡出持续时间（毫秒）
-
-// 均衡器设置
-let audioContext = null;
-let sourceNode = null;
-let gainNode = null;
-let eqBands = [];
-const EQ_PRESETS = {
-    normal: [0, 0, 0, 0, 0],
-    rock: [4, 3, 2, 1, 3],
-    pop: [-2, -1, 0, 2, 4],
-    jazz: [3, 2, -1, -2, 3],
-    classical: [4, 3, 2, -1, -2]
-};
-let currentEqPreset = 'normal';
 
 // 本地存储键名
 const STORAGE_KEYS = {
@@ -171,251 +140,6 @@ function preloadNext() {
     }
 }
 
-// 淡入效果
-function fadeIn() {
-    if (!fadeEnabled) return;
-    
-    const startTime = Date.now();
-    const startVolume = 0;
-    const targetVolume = lastVolume / 100;
-    
-    function updateVolume() {
-        const elapsed = Date.now() - startTime;
-        const progress = Math.min(elapsed / fadeDuration, 1);
-        const currentVolume = startVolume + (targetVolume - startVolume) * progress;
-        
-        audio.volume = currentVolume;
-        
-        if (progress < 1) {
-            requestAnimationFrame(updateVolume);
-        }
-    }
-    
-    updateVolume();
-}
-
-// 淡出效果
-function fadeOut(callback) {
-    if (!fadeEnabled) {
-        callback();
-        return;
-    }
-    
-    const startTime = Date.now();
-    const startVolume = audio.volume;
-    const targetVolume = 0;
-    
-    function updateVolume() {
-        const elapsed = Date.now() - startTime;
-        const progress = Math.min(elapsed / fadeDuration, 1);
-        const currentVolume = startVolume + (targetVolume - startVolume) * progress;
-        
-        audio.volume = currentVolume;
-        
-        if (progress < 1) {
-            requestAnimationFrame(updateVolume);
-        } else {
-            callback();
-        }
-    }
-    
-    updateVolume();
-}
-
-// 初始化均衡器
-function initEqualizer() {
-    try {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        sourceNode = audioContext.createMediaElementSource(audio);
-        gainNode = audioContext.createGain();
-        gainNode.gain.value = 1; // 确保增益为1
-        
-        // 创建5个均衡器频段
-        const frequencies = [32, 125, 500, 2000, 8000];
-        eqBands = frequencies.map((freq, index) => {
-            const band = audioContext.createBiquadFilter();
-            band.type = 'peaking';
-            band.frequency.value = freq;
-            band.Q.value = 1;
-            band.gain.value = 0;
-            return band;
-        });
-        
-        // 连接音频节点
-        sourceNode.connect(eqBands[0]);
-        for (let i = 0; i < eqBands.length - 1; i++) {
-            eqBands[i].connect(eqBands[i + 1]);
-        }
-        eqBands[eqBands.length - 1].connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        console.log('均衡器初始化成功');
-    } catch (error) {
-        console.error('均衡器初始化失败:', error);
-        // 均衡器初始化失败不影响其他功能
-    }
-}
-
-// 设置均衡器预设
-function setEqPreset(preset) {
-    currentEqPreset = preset;
-    const gains = EQ_PRESETS[preset];
-    
-    eqBands.forEach((band, index) => {
-        if (band && gains[index] !== undefined) {
-            band.gain.value = gains[index];
-        }
-    });
-    
-    // 更新滑块位置
-    document.querySelectorAll('.eq-slider').forEach((slider, index) => {
-        if (gains[index] !== undefined) {
-            slider.value = gains[index];
-        }
-    });
-    
-    // 更新预设按钮状态
-    document.querySelectorAll('.preset-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.preset === preset) {
-            btn.classList.add('active');
-        }
-    });
-}
-
-// 更新均衡器频段
-function updateEqBand(bandIndex, value) {
-    if (eqBands[bandIndex]) {
-        eqBands[bandIndex].gain.value = value;
-    }
-    
-    // 清除当前预设
-    document.querySelectorAll('.preset-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    currentEqPreset = 'custom';
-}
-
-// 播放队列管理
-
-// 添加到播放队列
-function addToQueue(musicId) {
-    // 检查是否已在队列中
-    if (!playQueue.includes(musicId)) {
-        playQueue.push(musicId);
-        updateQueueDisplay();
-    }
-}
-
-// 从播放队列中移除
-function removeFromQueue(index) {
-    playQueue.splice(index, 1);
-    if (queueIndex >= playQueue.length) {
-        queueIndex = playQueue.length - 1;
-    }
-    updateQueueDisplay();
-}
-
-// 清空播放队列
-function clearQueue() {
-    playQueue = [];
-    queueIndex = -1;
-    updateQueueDisplay();
-}
-
-// 随机排序播放队列
-function shuffleQueue() {
-    if (playQueue.length > 1) {
-        // Fisher-Yates 洗牌算法
-        for (let i = playQueue.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [playQueue[i], playQueue[j]] = [playQueue[j], playQueue[i]];
-        }
-        updateQueueDisplay();
-    }
-}
-
-// 更新播放队列显示
-function updateQueueDisplay() {
-    const queueList = elements.queueList;
-    queueList.innerHTML = '';
-    
-    if (playQueue.length === 0) {
-        queueList.innerHTML = '<div class="no-queue">暂无队列</div>';
-        return;
-    }
-    
-    playQueue.forEach((queueMusicId, index) => {
-        const queueItem = document.createElement('div');
-        queueItem.className = `queue-item ${index === queueIndex ? 'current' : ''}`;
-        
-        const queueInfo = document.createElement('div');
-        queueInfo.className = 'queue-info';
-        
-        const queueTitle = document.createElement('div');
-        queueTitle.className = 'queue-title';
-        queueTitle.textContent = musicData[queueMusicId][0];
-        
-        const queueArtist = document.createElement('div');
-        queueArtist.className = 'queue-artist';
-        queueArtist.textContent = musicData[queueMusicId][1];
-        
-        queueInfo.appendChild(queueTitle);
-        queueInfo.appendChild(queueArtist);
-        
-        const queueRemove = document.createElement('button');
-        queueRemove.className = 'queue-remove';
-        queueRemove.textContent = '×';
-        queueRemove.addEventListener('click', function(e) {
-            e.stopPropagation();
-            removeFromQueue(index);
-        });
-        
-        // 点击播放
-        queueItem.addEventListener('click', function() {
-            fadeOut(() => {
-                queueIndex = index;
-                musicId = queueMusicId;
-                initAndPlay();
-                fadeIn();
-                elements.queueModal.classList.remove('show');
-            });
-        });
-        
-        queueItem.appendChild(queueInfo);
-        queueItem.appendChild(queueRemove);
-        queueList.appendChild(queueItem);
-    });
-}
-
-// 播放队列中的下一首
-function playNextInQueue() {
-    if (playQueue.length === 0) {
-        // 队列空，使用默认播放模式
-        musicId = (musicId + 1) % musicData.length;
-        initAndPlay();
-    } else {
-        // 队列非空，播放下一首
-        queueIndex = (queueIndex + 1) % playQueue.length;
-        musicId = playQueue[queueIndex];
-        initAndPlay();
-    }
-}
-
-// 播放队列中的上一首
-function playPreviousInQueue() {
-    if (playQueue.length === 0) {
-        // 队列空，使用默认播放模式
-        musicId = (musicId - 1 + musicData.length) % musicData.length;
-        initAndPlay();
-    } else {
-        // 队列非空，播放上一首
-        queueIndex = (queueIndex - 1 + playQueue.length) % playQueue.length;
-        musicId = playQueue[queueIndex];
-        initAndPlay();
-    }
-}
-
 // 显示加载状态
 function showLoading() {
     elements.loading.classList.add('show');
@@ -447,7 +171,7 @@ function addToPlayHistory() {
 
 // 更新播放历史显示
 function updatePlayHistoryDisplay() {
-    const historyContainer = document.getElementById('play-history-container');
+    const historyContainer = document.getElementById('history-list');
     if (!historyContainer) return;
     
     // 清空历史容器
@@ -463,29 +187,14 @@ function updatePlayHistoryDisplay() {
         // 添加历史记录
         playHistory.forEach((historyMusicId, index) => {
             const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
             historyItem.id = `history-${historyMusicId}`;
             historyItem.textContent = `${musicData[historyMusicId][0]} - ${musicData[historyMusicId][1]}`;
             
             // 添加点击事件
             historyItem.addEventListener('click', function() {
-                fadeOut(() => {
-                    musicId = historyMusicId;
-                    initAndPlay();
-                    fadeIn();
-                    // 关闭列表
-                    elements.musicList.classList.remove('list-card-show');
-                    elements.musicList.classList.add('list-card-hide');
-                    elements.closeList.style.display = 'none';
-                });
-            });
-            
-            // 鼠标悬停效果
-            historyItem.addEventListener('mouseenter', function() {
-                this.style.backgroundColor = 'rgb(27, 37, 30)';
-            });
-            
-            historyItem.addEventListener('mouseleave', function() {
-                this.style.backgroundColor = '';
+                musicId = historyMusicId;
+                initAndPlay();
             });
             
             historyContainer.appendChild(historyItem);
@@ -741,65 +450,6 @@ elements.download.addEventListener('click', function() {
     downloadMusic();
 });
 
-// 均衡器功能
-elements.equalizer.addEventListener('click', function() {
-    elements.equalizerModal.classList.add('show');
-});
-
-elements.closeEqualizer.addEventListener('click', function() {
-    elements.equalizerModal.classList.remove('show');
-});
-
-// 点击弹窗外部关闭
-elements.equalizerModal.addEventListener('click', function(event) {
-    if (event.target === elements.equalizerModal) {
-        elements.equalizerModal.classList.remove('show');
-    }
-});
-
-// 均衡器预设按钮
-document.querySelectorAll('.preset-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const preset = this.dataset.preset;
-        setEqPreset(preset);
-    });
-});
-
-// 均衡器滑块
-document.querySelectorAll('.eq-slider').forEach(slider => {
-    slider.addEventListener('input', function() {
-        const bandIndex = parseInt(this.dataset.band);
-        const value = parseFloat(this.value);
-        updateEqBand(bandIndex, value);
-    });
-});
-
-// 播放队列功能
-elements.queue.addEventListener('click', function() {
-    elements.queueModal.classList.add('show');
-});
-
-elements.closeQueue.addEventListener('click', function() {
-    elements.queueModal.classList.remove('show');
-});
-
-// 点击弹窗外部关闭
-elements.queueModal.addEventListener('click', function(event) {
-    if (event.target === elements.queueModal) {
-        elements.queueModal.classList.remove('show');
-    }
-});
-
-// 清空队列
-elements.clearQueue.addEventListener('click', function() {
-    clearQueue();
-});
-
-// 随机排序队列
-elements.shuffleQueue.addEventListener('click', function() {
-    shuffleQueue();
-});
-
 function downloadMusic() {
     const musicName = musicData[musicId][0];
     const authorName = musicData[musicId][1];
@@ -947,13 +597,10 @@ document.addEventListener('touchend', function() {
 
 // 点击列表展开音乐列表
 elements.list.addEventListener('click', function() {
-    console.log('打开音乐列表');
+    elements.musicList.classList.remove('list-card-hide');
+    elements.musicList.classList.add('list-card-show');
     elements.musicList.style.display = 'flex';
-    setTimeout(() => {
-        elements.musicList.classList.remove('list-card-hide');
-        elements.musicList.classList.add('list-card-show');
-        elements.closeList.style.display = 'flex';
-    }, 10);
+    elements.closeList.style.display = 'flex';
 });
 
 // 点击关闭面板关闭音乐列表
@@ -978,43 +625,32 @@ audio.addEventListener('ended', function() {
         audio.play();
     } else if (modeId === 2) {
         // 顺序播放
-        fadeOut(() => {
-            playNextInQueue();
-            fadeIn();
-        });
+        musicId = (musicId + 1) % musicData.length;
+        initAndPlay();
     } else if (modeId === 3) {
         // 随机播放
-        fadeOut(() => {
-            const oldId = musicId;
-            do {
-                musicId = Math.floor(Math.random() * musicData.length);
-            } while (musicId === oldId && musicData.length > 1);
-            initAndPlay();
-            fadeIn();
-        });
+        const oldId = musicId;
+        do {
+            musicId = Math.floor(Math.random() * musicData.length);
+        } while (musicId === oldId && musicData.length > 1);
+        initAndPlay();
     } else if (modeId === 4) {
-        // 列表循环
-        fadeOut(() => {
-            playNextInQueue();
-            fadeIn();
-        });
+        // 列表循环（与顺序播放相同）
+        musicId = (musicId + 1) % musicData.length;
+        initAndPlay();
     }
 });
 
 // 上一首
 elements.skipForward.addEventListener('click', function() {
-    fadeOut(() => {
-        playPreviousInQueue();
-        fadeIn();
-    });
+    musicId = (musicId - 1 + musicData.length) % musicData.length;
+    initAndPlay();
 });
 
 // 下一首
 elements.skipBackward.addEventListener('click', function() {
-    fadeOut(() => {
-        playNextInQueue();
-        fadeIn();
-    });
+    musicId = (musicId + 1) % musicData.length;
+    initAndPlay();
 });
 
 // 倍速功能
@@ -1032,70 +668,13 @@ elements.allList.addEventListener('click', function(event) {
     if (target.tagName === 'DIV') {
         const id = target.id;
         if (id.startsWith('music')) {
-            fadeOut(() => {
-                musicId = parseInt(id.replace('music', ''));
-                initAndPlay();
-                fadeIn();
-                // 关闭列表
-                elements.musicList.classList.remove('list-card-show');
-                elements.musicList.classList.add('list-card-hide');
-                elements.closeList.style.display = 'none';
-            });
+            musicId = parseInt(id.replace('music', ''));
+            initAndPlay();
+            // 关闭列表
+            elements.musicList.classList.remove('list-card-show');
+            elements.musicList.classList.add('list-card-hide');
+            elements.closeList.style.display = 'none';
         }
-    }
-});
-
-// 音乐列表右键菜单
-elements.allList.addEventListener('contextmenu', function(event) {
-    const target = event.target;
-    if (target.tagName === 'DIV' && target.id.startsWith('music')) {
-        event.preventDefault();
-        const musicId = parseInt(target.id.replace('music', ''));
-        
-        // 创建右键菜单
-        const menu = document.createElement('div');
-        menu.className = 'context-menu';
-        menu.style.position = 'fixed';
-        menu.style.left = `${event.clientX}px`;
-        menu.style.top = `${event.clientY}px`;
-        menu.style.backgroundColor = 'rgba(30, 30, 30, 0.95)';
-        menu.style.borderRadius = '5px';
-        menu.style.padding = '10px 0';
-        menu.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.5)';
-        menu.style.zIndex = '1001';
-        
-        // 添加到队列选项
-        const addToQueueOption = document.createElement('div');
-        addToQueueOption.textContent = '添加到播放队列';
-        addToQueueOption.style.padding = '8px 20px';
-        addToQueueOption.style.cursor = 'pointer';
-        addToQueueOption.style.color = 'white';
-        addToQueueOption.style.fontSize = '0.9rem';
-        addToQueueOption.addEventListener('click', function() {
-            addToQueue(musicId);
-            document.body.removeChild(menu);
-        });
-        
-        addToQueueOption.addEventListener('mouseenter', function() {
-            this.style.backgroundColor = 'rgba(66, 182, 128, 0.2)';
-        });
-        
-        addToQueueOption.addEventListener('mouseleave', function() {
-            this.style.backgroundColor = 'transparent';
-        });
-        
-        menu.appendChild(addToQueueOption);
-        document.body.appendChild(menu);
-        
-        // 点击其他地方关闭菜单
-        setTimeout(() => {
-            document.addEventListener('click', function closeMenu(e) {
-                if (!menu.contains(e.target)) {
-                    document.body.removeChild(menu);
-                    document.removeEventListener('click', closeMenu);
-                }
-            });
-        }, 0);
     }
 });
 
@@ -1197,6 +776,3 @@ document.addEventListener('keydown', function(event) {
 
 // 初始化播放历史显示
 updatePlayHistoryDisplay();
-
-// 初始化均衡器
-initEqualizer();

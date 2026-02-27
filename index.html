@@ -9,6 +9,16 @@
 
 <body id="body" background="./img/bg0.png">
     <div class="upper-container">
+        <!-- 播放历史面板 -->
+        <div class="history-panel">
+            <div class="history-header">
+                <h3>播放历史</h3>
+            </div>
+            <div id="history-list" class="history-list">
+                <!-- 播放历史会通过JavaScript动态添加 -->
+                <div class="no-history">暂无播放历史</div>
+            </div>
+        </div>
         <!-- 唱片背景 -->
         <div class="record-container">
             <div class="record-bg">
@@ -97,15 +107,6 @@
             </div>
             <div class="all-music-label">全部音乐</div>
             <div class="all-list" id="all-list">
-                <!-- 播放历史 板块 -->
-                <div class="music-section">
-                    <div class="section-title">播放历史</div>
-                    <div id="play-history-container">
-                        <!-- 播放历史会通过JavaScript动态添加 -->
-                        <div class="no-history">暂无播放历史</div>
-                    </div>
-                </div>
-                
                 <!-- emo 板块 -->
                 <div class="music-section">
                     <div class="section-title">emo</div>
