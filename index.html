@@ -80,10 +80,7 @@
                     <div id="download" class="bottom-icon download" title="下载当前歌曲"></div>
                     <!-- 倍速 -->
                     <div id="speed" class="speed">1.0X</div>
-                    <!-- 均衡器 -->
-                <div id="equalizer" class="bottom-icon equalizer" title="均衡器"></div>
-                <!-- 播放队列 -->
-                <div id="queue" class="bottom-icon queue" title="播放队列"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -179,63 +176,6 @@
                     <span class="key">D</span>
                     <span class="desc">下载当前歌曲</span>
                 </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 均衡器弹窗 -->
-    <div class="equalizer-modal" id="equalizer-modal">
-        <div class="equalizer-content">
-            <div class="equalizer-header">
-                <h2>均衡器</h2>
-                <div id="close-equalizer" class="close-btn">✕</div>
-            </div>
-            <div class="equalizer-presets">
-                <button class="preset-btn active" data-preset="normal">标准</button>
-                <button class="preset-btn" data-preset="rock">摇滚</button>
-                <button class="preset-btn" data-preset="pop">流行</button>
-                <button class="preset-btn" data-preset="jazz">爵士</button>
-                <button class="preset-btn" data-preset="classical">古典</button>
-            </div>
-            <div class="equalizer-bands">
-                <div class="eq-band">
-                    <label>32Hz</label>
-                    <input type="range" min="-10" max="10" value="0" class="eq-slider" data-band="0">
-                </div>
-                <div class="eq-band">
-                    <label>125Hz</label>
-                    <input type="range" min="-10" max="10" value="0" class="eq-slider" data-band="1">
-                </div>
-                <div class="eq-band">
-                    <label>500Hz</label>
-                    <input type="range" min="-10" max="10" value="0" class="eq-slider" data-band="2">
-                </div>
-                <div class="eq-band">
-                    <label>2kHz</label>
-                    <input type="range" min="-10" max="10" value="0" class="eq-slider" data-band="3">
-                </div>
-                <div class="eq-band">
-                    <label>8kHz</label>
-                    <input type="range" min="-10" max="10" value="0" class="eq-slider" data-band="4">
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 播放队列弹窗 -->
-    <div class="queue-modal" id="queue-modal">
-        <div class="queue-content">
-            <div class="queue-header">
-                <h2>播放队列</h2>
-                <div id="close-queue" class="close-btn">✕</div>
-            </div>
-            <div class="queue-actions">
-                <button id="clear-queue" class="queue-btn">清空队列</button>
-                <button id="shuffle-queue" class="queue-btn">随机排序</button>
-            </div>
-            <div class="queue-list" id="queue-list">
-                <!-- 队列会通过JavaScript动态添加 -->
-                <div class="no-queue">暂无队列</div>
             </div>
         </div>
     </div>
