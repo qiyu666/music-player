@@ -20,17 +20,9 @@ body {
     border-right: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     flex-direction: column;
-    height: 100%;
-    transition: all 0.3s ease;
+    min-height: 80px;
+    max-height: 100%;
     overflow: hidden;
-}
-
-.history-panel.collapsed {
-    width: 60px;
-}
-
-.history-panel.collapsed .history-header h3 {
-    display: none;
 }
 
 .history-header {
@@ -47,7 +39,6 @@ body {
     font-size: 1.2rem;
     font-weight: 400;
     margin: 0;
-    transition: all 0.3s ease;
 }
 
 .history-toggle {
@@ -64,7 +55,7 @@ body {
     flex: 1;
     overflow-y: auto;
     padding: 10px 0;
-    transition: all 0.3s ease;
+    transition: max-height 0.3s ease;
     max-height: 500px;
 }
 
