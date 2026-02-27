@@ -61,13 +61,22 @@ let currentLyrics = [];
 let currentLyricIndex = -1;
 let isDragging = false;
 
+// 预加载相关
+let preloadAudio = new Audio();
+let preloadedMusicId = -1;
+
+// 播放历史
+let playHistory = [];
+const MAX_HISTORY_ITEMS = 50;
+
 // 本地存储键名
 const STORAGE_KEYS = {
     volume: 'musicPlayer_volume',
     mode: 'musicPlayer_mode',
     speed: 'musicPlayer_speed',
     lastMusic: 'musicPlayer_lastMusic',
-    favorites: 'musicPlayer_favorites'
+    favorites: 'musicPlayer_favorites',
+    playHistory: 'musicPlayer_playHistory'
 };
 
 // 收藏列表
@@ -99,6 +108,11 @@ function loadSettings() {
         musicId = parseInt(savedMusic);
     }
     
+    const savedHistory = localStorage.getItem(STORAGE_KEYS.playHistory);
+    if (savedHistory !== null) {
+        playHistory = JSON.parse(savedHistory);
+    }
+    
     const savedFavorites = localStorage.getItem(STORAGE_KEYS.favorites);
     if (savedFavorites !== null) {
         favorites = JSON.parse(savedFavorites);
@@ -112,12 +126,88 @@ function saveSettings() {
     localStorage.setItem(STORAGE_KEYS.speed, playbackSpeeds[currentSpeedIndex]);
     localStorage.setItem(STORAGE_KEYS.lastMusic, musicId);
     localStorage.setItem(STORAGE_KEYS.favorites, JSON.stringify(favorites));
+    localStorage.setItem(STORAGE_KEYS.playHistory, JSON.stringify(playHistory));
+}
+
+// 预加载下一首
+function preloadNext() {
+    const nextMusicId = (musicId + 1) % musicData.length;
+    if (nextMusicId !== preloadedMusicId) {
+        preloadAudio.src = `mp3/music${nextMusicId}.mp3`;
+        preloadAudio.load();
+        preloadedMusicId = nextMusicId;
+        console.log(`预加载下一首: ${musicData[nextMusicId][0]}`);
+    }
 }
 
 // 显示加载状态
 function showLoading() {
     elements.loading.classList.add('show');
     elements.errorMessage.classList.remove('show');
+}
+
+// 添加到播放历史
+function addToPlayHistory() {
+    // 从历史中移除当前歌曲（如果存在）
+    const index = playHistory.indexOf(musicId);
+    if (index > -1) {
+        playHistory.splice(index, 1);
+    }
+    
+    // 添加到历史开头
+    playHistory.unshift(musicId);
+    
+    // 限制历史记录长度
+    if (playHistory.length > MAX_HISTORY_ITEMS) {
+        playHistory = playHistory.slice(0, MAX_HISTORY_ITEMS);
+    }
+    
+    // 保存到本地存储
+    saveSettings();
+    
+    // 更新历史显示
+    updatePlayHistoryDisplay();
+}
+
+// 更新播放历史显示
+function updatePlayHistoryDisplay() {
+    const historyContainer = document.getElementById('play-history-container');
+    if (!historyContainer) return;
+    
+    // 清空历史容器
+    historyContainer.innerHTML = '';
+    
+    if (playHistory.length === 0) {
+        // 显示无历史提示
+        const noHistory = document.createElement('div');
+        noHistory.className = 'no-history';
+        noHistory.textContent = '暂无播放历史';
+        historyContainer.appendChild(noHistory);
+    } else {
+        // 添加历史记录
+        playHistory.forEach((historyMusicId, index) => {
+            const historyItem = document.createElement('div');
+            historyItem.id = `history-${historyMusicId}`;
+            historyItem.textContent = `${musicData[historyMusicId][0]} - ${musicData[historyMusicId][1]}`;
+            
+            // 添加点击事件
+            historyItem.addEventListener('click', function() {
+                musicId = historyMusicId;
+                initAndPlay();
+            });
+            
+            // 鼠标悬停效果
+            historyItem.addEventListener('mouseenter', function() {
+                this.style.backgroundColor = 'rgb(27, 37, 30)';
+            });
+            
+            historyItem.addEventListener('mouseleave', function() {
+                this.style.backgroundColor = '';
+            });
+            
+            historyContainer.appendChild(historyItem);
+        });
+    }
 }
 
 // 隐藏加载状态
@@ -389,6 +479,7 @@ function initMusic() {
     audio.src = `mp3/music${musicId}.mp3`;
     audio.load();
     recordImg.classList.remove('rotate-play');
+    updatePlayHistoryDisplay();
     
     audio.onloadedmetadata = function() {
         hideLoading();
@@ -405,6 +496,7 @@ function initMusic() {
         refreshRotate();
         updatePlayingIndicator();
         updateFavoriteButton();
+        preloadNext();
     };
     
     audio.onerror = function() {
@@ -421,6 +513,8 @@ function initAndPlay() {
     elements.playPause.classList.add('icon-pause');
     audio.play();
     rotateRecord();
+    addToPlayHistory();
+    preloadNext();
     saveSettings();
 }
 
@@ -672,3 +766,6 @@ document.addEventListener('keydown', function(event) {
             break;
     }
 });
+
+// 初始化播放历史显示
+updatePlayHistoryDisplay();
