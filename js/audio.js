@@ -46,7 +46,8 @@ const musicData = [
     ['回忆观影券(伴奏)', 'IN-K/王忻辰'],
     ['24/7(氛围)', 'Diary'],
     ['中式梦核MMM', '百万调音师&失眠飞行'],
-    ['Dramamine', 'flawed mangoes']
+    ['Dramamine', 'flawed mangoes'],
+    ['Estrella', 'm-take']
 ];
 
 // 状态变量
