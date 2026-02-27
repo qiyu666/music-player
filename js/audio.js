@@ -375,8 +375,8 @@ function initMusic() {
         if (isNaN(audio.duration)) return;
         elements.musicTitle.textContent = musicData[musicId][0];
         elements.author.textContent = musicData[musicId][1];
-        recordImg.style.backgroundImage = `url('img/record${musicId}.jpg')`;
-        elements.body.style.backgroundImage = `url('img/bg${musicId}.png')`;
+        recordImg.style.backgroundImage = `url('img/record${musicId}.jpg?${Date.now()}')`;
+        elements.body.style.backgroundImage = `url('img/bg${musicId}.png?${Date.now()}')`;
         elements.audioTime.textContent = formatTime(audio.duration);
         loadLyrics(musicId);
         audio.currentTime = 0;
