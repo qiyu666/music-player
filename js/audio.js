@@ -228,6 +228,7 @@ function initEqualizer() {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         sourceNode = audioContext.createMediaElementSource(audio);
         gainNode = audioContext.createGain();
+        gainNode.gain.value = 1; // 确保增益为1
         
         // 创建5个均衡器频段
         const frequencies = [32, 125, 500, 2000, 8000];
@@ -946,10 +947,13 @@ document.addEventListener('touchend', function() {
 
 // 点击列表展开音乐列表
 elements.list.addEventListener('click', function() {
-    elements.musicList.classList.remove('list-card-hide');
-    elements.musicList.classList.add('list-card-show');
+    console.log('打开音乐列表');
     elements.musicList.style.display = 'flex';
-    elements.closeList.style.display = 'flex';
+    setTimeout(() => {
+        elements.musicList.classList.remove('list-card-hide');
+        elements.musicList.classList.add('list-card-show');
+        elements.closeList.style.display = 'flex';
+    }, 10);
 });
 
 // 点击关闭面板关闭音乐列表
