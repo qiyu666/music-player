@@ -464,13 +464,28 @@ function downloadMusic() {
     const fileName = `${musicName}-${authorName}.mp3`;
     const audioUrl = `mp3/music${musicId}.mp3`;
     
-    const link = document.createElement('a');
-    link.href = audioUrl;
-    link.download = fileName;
-    link.style.display = 'none';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // 使用更可靠的下载方法
+    fetch(audioUrl)
+        .then(response => response.blob())
+        .then(blob => {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            
+            // 清理
+            setTimeout(() => {
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }, 100);
+        })
+        .catch(error => {
+            console.error('下载失败:', error);
+            showError('下载失败，请重试');
+        });
 }
 
 // 初始化音乐
