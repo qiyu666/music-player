@@ -776,3 +776,19 @@ document.addEventListener('keydown', function(event) {
 
 // 初始化播放历史显示
 updatePlayHistoryDisplay();
+
+// 播放历史展开/收起功能
+const historyToggle = document.getElementById('history-toggle');
+const historyList = document.getElementById('history-list');
+
+historyToggle.addEventListener('click', function() {
+    historyList.classList.toggle('collapsed');
+    historyToggle.classList.toggle('collapsed');
+});
+
+// 点击历史面板头部也可以展开/收起
+const historyHeader = document.querySelector('.history-header');
+historyHeader.addEventListener('click', function() {
+    historyList.classList.toggle('collapsed');
+    historyToggle.classList.toggle('collapsed');
+});
