@@ -14,7 +14,6 @@ body {
 
 /* 历史面板 - 与音乐列表类似的样式 */
 .history-panel {
-    display: none;
     position: fixed;
     height: 100%;
     right: 0;
@@ -22,10 +21,21 @@ body {
     width: 25%;
     background-color: rgb(29, 40, 32);
     z-index: 100;
+    transform: translateX(100%);
 }
 
-.history-panel.show {
-    display: block;
+.history-panel.list-card-show {
+    animation: showAni;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    -webkit-animation-fill-mode: forwards;
+}
+
+.history-panel.list-card-hide {
+    animation: hideAni;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    -webkit-animation-fill-mode: forwards;
 }
 
 .history-panel-container {

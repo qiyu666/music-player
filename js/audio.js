@@ -608,7 +608,8 @@ elements.list.addEventListener('click', function() {
 
 // 点击历史展开播放历史
 elements.history.addEventListener('click', function() {
-    elements.historyPanel.classList.add('show');
+    elements.historyPanel.classList.remove('list-card-hide');
+    elements.historyPanel.classList.add('list-card-show');
     elements.closeHistory.style.display = 'flex';
 });
 
@@ -621,7 +622,8 @@ elements.closeList.addEventListener('click', function() {
 
 // 点击关闭面板关闭播放历史
 elements.closeHistory.addEventListener('click', function() {
-    elements.historyPanel.classList.remove('show');
+    elements.historyPanel.classList.remove('list-card-show');
+    elements.historyPanel.classList.add('list-card-hide');
     elements.closeHistory.style.display = 'none';
 });
 
