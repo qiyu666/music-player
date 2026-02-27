@@ -507,6 +507,17 @@ function initMusic() {
         updatePlayingIndicator();
         updateFavoriteButton();
         preloadNext();
+        
+        // 播放音乐
+        audio.play().catch(error => {
+            showError('播放失败，请重试');
+            console.error('Play error:', error);
+        });
+        elements.playPause.classList.remove('icon-play');
+        elements.playPause.classList.add('icon-pause');
+        rotateRecord();
+        addToPlayHistory();
+        saveSettings();
     };
     
     audio.onerror = function() {
@@ -519,13 +530,7 @@ function initMusic() {
 // 初始化并播放
 function initAndPlay() {
     initMusic();
-    elements.playPause.classList.remove('icon-play');
-    elements.playPause.classList.add('icon-pause');
-    audio.play();
-    rotateRecord();
-    addToPlayHistory();
-    preloadNext();
-    saveSettings();
+    // 播放逻辑移到loadedmetadata事件中
 }
 
 // 播放/暂停切换
