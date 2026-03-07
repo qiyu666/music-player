@@ -6,7 +6,7 @@ const urlsToCache = [
   './index.html',
   './css/audio.css',
   './js/audio.js',
-  './img/icon-192x192.png', // 确保路径正确
+  './img/tb.png', // 确保路径正确
   // 添加其他必要的图片或库
 ];
 
