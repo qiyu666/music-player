@@ -61,6 +61,9 @@ const musicData = [
     ['中式梦核MMM', '百万调音师&失眠飞行'],
     ['Dramamine', 'flawed mangoes'],
     ['Estrella', 'm-take']
+    ['Time Stop', 'A.A.F']
+    ['Wasted', 'Strangerboi24']
+    ['我愛你', 'Ayasa绚沙']
 ];
 
 // 状态变量
