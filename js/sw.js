@@ -35,27 +35,43 @@ for (let i = 0; i <= 12; i++) {
   RECORD_IMAGES.push(`./img/record${i}.jpg`);
 }
 
+// 控制按钮图片列表
+const CONTROL_IMAGES = [
+  './img/mode1.png',
+  './img/mode2.png',
+  './img/mode3.png',
+  './img/上一首.png',
+  './img/下一首.png',
+  './img/列表.png',
+  './img/播放记录.png',
+  './img/暂停.png',
+  './img/继续播放.png',
+  './img/静音.png',
+  './img/音量.png'
+];
+
 // 所有需要预缓存的文件
 const ALL_CACHABLE_FILES = [
   ...CORE_FILES,
   ...MUSIC_FILES,
   ...LYRICS_FILES,
   ...BG_IMAGES,
-  ...RECORD_IMAGES
+  ...RECORD_IMAGES,
+  ...CONTROL_IMAGES
 ];
-
-// 安装阶段：缓存所有文件
+// 安装阶段：缓存所有文件 - 实现整站离线
 self.addEventListener('install', (event) => {
-  console.log('[SW] Installing Service Worker...');
+  console.log('[SW] Installing Service Worker - Caching entire site...');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('[SW] Caching core files');
-        // 先缓存核心文件
-        return cache.addAll(CORE_FILES);
+        console.log('[SW] Caching ALL files for full offline support');
+        // 缓存所有文件，包括核心文件、音乐、歌词、图片
+        return cache.addAll(ALL_CACHABLE_FILES);
       })
       .then(() => {
-        console.log('[SW] Core files cached, skipping waiting');
+        console.log('[SW] All files cached successfully!');
+        console.log('[SW] Total files cached:', ALL_CACHABLE_FILES.length);
         // 跳过等待，直接激活
         return self.skipWaiting();
       })
