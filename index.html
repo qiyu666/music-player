@@ -190,20 +190,8 @@
             </div>
         </div>
     </div>
-  // 检查浏览器是否支持 Service Worker(删除从在删除)
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/music-player/sw.js') // 注意路径，如果项目在子目录需加上前缀
-        .then((registration) => {
-          console.log('SW registered: ', registration);
-        })
-        .catch((registrationError) => {
-          console.log('SW registration failed: ', registrationError);
-        });
-    });
-  }
-//删除到这
-
+    <!-- Service Worker 注册 -->
+    <script src="./js/sw-register.js"></script>
     <script src="./js/audio.js"></script>
 </body>
 
