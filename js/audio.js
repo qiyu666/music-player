@@ -60,9 +60,9 @@ const musicData = [
     ['24/7(氛围)', 'Diary'],
     ['中式梦核MMM', '百万调音师&失眠飞行'],
     ['Dramamine', 'flawed mangoes'],
-    ['Estrella', 'm-take']
-    ['Time Stop', 'A.A.F']
-    ['Wasted', 'Strangerboi24']
+    ['Estrella', 'm-take'],
+    ['Time Stop', 'A.A.F'],
+    ['Wasted', 'Strangerboi24'],
     ['我愛你', 'Ayasa绚沙']
 ];
 
