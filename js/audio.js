@@ -65,7 +65,8 @@ const musicData = [
     ['Wasted', 'Strangerboi24'],
     ['我愛你', 'Ayasa绚沙'],
     ['海阔天空尾奏(竹笛纯享旋律)', '广大网友'],
-    ['AM', 'T-Chenxi']
+    ['AM', 'T-Chenxi'],
+    ['Maybe', 'matches&Lukrative'],
 ];
 
 // 状态变量
