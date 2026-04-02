@@ -63,7 +63,9 @@ const musicData = [
     ['Estrella', 'm-take'],
     ['Time Stop', 'A.A.F'],
     ['Wasted', 'Strangerboi24'],
-    ['我愛你', 'Ayasa绚沙']
+    ['我愛你', 'Ayasa绚沙'],
+    ['海阔天空尾奏(竹笛纯享旋律)', '广大网友'],
+    ['AM', 'T-Chenxi']
 ];
 
 // 状态变量
