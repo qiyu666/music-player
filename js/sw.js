@@ -13,25 +13,25 @@ const CORE_FILES = [
 
 // 音乐文件列表
 const MUSIC_FILES = [];
-for (let i = 0; i <= 12; i++) {
+for (let i = 0; i <= 19; i++) {
   MUSIC_FILES.push(`./mp3/music${i}.mp3`);
 }
 
 // 歌词文件列表
 const LYRICS_FILES = [];
-for (let i = 0; i <= 12; i++) {
+for (let i = 0; i <= 19; i++) {
   LYRICS_FILES.push(`./gc/music${i}.lrc`);
 }
 
 // 背景图片列表
 const BG_IMAGES = [];
-for (let i = 0; i <= 12; i++) {
+for (let i = 0; i <= 19; i++) {
   BG_IMAGES.push(`./img/bg${i}.png`);
 }
 
 // 唱片图片列表
 const RECORD_IMAGES = [];
-for (let i = 0; i <= 12; i++) {
+for (let i = 0; i <= 19; i++) {
   RECORD_IMAGES.push(`./img/record${i}.jpg`);
 }
 

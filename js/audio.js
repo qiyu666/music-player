@@ -67,7 +67,7 @@ const musicData = [
     ['海阔天空尾奏(竹笛纯享旋律)', '广大网友'],
     ['AM', 'T-Chenxi'],
     ['Maybe', 'matches&Lukrative'],
-    3 Strikes', 'Terror Jr'],
+    ['3 Strikes', 'Terror Jr'],
 ];
 
 // 状态变量
