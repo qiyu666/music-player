@@ -68,7 +68,7 @@ const musicData = [
     ['AM', 'T-Chenxi'],
     ['Maybe', 'matches&Lukrative'],
     ['3 Strikes', 'Terror Jr'],
-    ['uniqueness', 'YOIRUI'],
+    ['陈粒-小半(0.9x)', '笙稔'],
 ];
 
 // 状态变量
