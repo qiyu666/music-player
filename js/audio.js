@@ -70,6 +70,7 @@ const musicData = [
     ['3 Strikes', 'Terror Jr'],
     ['uniqueness', 'YOIRUI'],
     ['陈粒-小半(0.9x)', '笙稔'],
+    ['幻昼(降调版)', '广大网友'],
 ];
 
 // 状态变量
